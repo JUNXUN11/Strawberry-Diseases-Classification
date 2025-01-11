@@ -40,7 +40,7 @@ def preprocess_image(image, target_size=(224, 224)):
 
 # Streamlit App UI
 if os.path.exists(HEADER_IMAGE_PATH):
-    st.image(HEADER_IMAGE_PATH, use_column_width=True)  # Add the header image
+    st.image(HEADER_IMAGE_PATH, use_container_width=True)  # Add the header image
 st.markdown("<h2>Strawberry Disease Classification App 🍓</h2> <br>", unsafe_allow_html=True)
 st.write("Upload an image of a strawberry leaf to detect diseases.")
 
@@ -65,7 +65,7 @@ if uploaded_file is not None:
 
         # Display the uploaded image in the first column
         with col1:
-            st.image(image, caption="Uploaded Image", use_column_width=True)
+            st.image(image, caption="Uploaded Image", use_container_width=True)
 
         # Display prediction results in the second column
         with col2:
