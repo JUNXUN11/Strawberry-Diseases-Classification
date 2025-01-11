@@ -2,7 +2,6 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import cv2
 
 # Load the trained model
 MODEL_PATH = 'strawberry_disease_model.h5'
@@ -32,17 +31,15 @@ def preprocess_image(image, target_size=(224, 224)):
     return image
 
 # Streamlit App UI
-st.title("Strawberry Disease Detection App 🍓")
+st.image("header_image.png", use_column_width=True)  # Add the header image
+st.markdown("<h2>Strawberry Disease Classifcation App 🍓</h2> <br>", unsafe_allow_html=True)
 st.write("Upload an image of a strawberry leaf to detect diseases.")
-
 # File uploader for image input
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     # Load the image
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-    st.write("Processing the image...")
 
     # Preprocess the image
     preprocessed_image = preprocess_image(image)
@@ -52,11 +49,28 @@ if uploaded_file is not None:
     predicted_class = np.argmax(predictions, axis=1)[0]
     confidence = np.max(predictions)
 
-    # Display results
-    st.write(f"**Predicted Disease:** {disease_labels[predicted_class]}")
-    st.write(f"**Confidence:** {confidence:.2%}")
+    # Create a two-column layout
+    col1, col2 = st.columns([1, 1])  # Adjust the ratio if needed
 
-    # Show confidence scores for all classes
+    # Display the uploaded image in the first column
+    with col1:
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+    # Display prediction results in the second column
+    with col2:
+        st.markdown(
+            f"""
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <h4 style="color: #ff4b4b;">Predicted Disease:</h4>
+                <h3 style="color: #333;">{disease_labels[predicted_class]}</h3>
+                <h4 style="color: #ff4b4b;">Confidence:</h4>
+                <h3 style="color: #333;">{confidence:.2%}</h3>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # Show confidence scores for all classes below the main result
     st.write("### Confidence Scores:")
     for i, score in enumerate(predictions[0]):
         st.write(f"{disease_labels[i]}: {score:.2%}")
